@@ -17,6 +17,7 @@ router.post('/', (req, res) => {
     }
   })
 });
+
 // RETRIEVES ALL STOPS FROM DB
 router.get('/', (req, res) => {
   Stops.find({}, function (err, stops) {
@@ -27,7 +28,20 @@ router.get('/', (req, res) => {
     }
   }).sort({_id: 'asc'});
 });
-// BRINGS 5 RESULTS FROM THE DB AT A TIME
+// BRINGS FIRST 5 RESULTS AT A TIME FOR TESTING
+router.get('/firstfive', (req, res) => {
+  Stops.find({})
+  .skip((1-1)*5)
+  .limit(5)
+  .exec(function (err, stops) {
+    if (err) {
+      return res.status(500).send(errorMsgs.getAllBad);
+    } else {
+      return res.status(200).send(stops);
+    }
+  })
+});
+// BRINGS ONE PAGE OF FIVE  RESULTS FROM THE DB AT A TIME
 router.get('/paginate/:page/:numResults',(req,res)=>{
   console.log(req.params)
   if (req.params.page) {
@@ -50,12 +64,12 @@ router.get('/random', (req, res) => {
    Stops.aggregate([{
       $sample: {size: 1}},
       {$match: {'stop_id': {$exists: true}}}],
-      (err, book) => {
+      (err, stop) => {
         if (err) {
         console.log(err);
         res.status(500).send(errorMsgs.getShowAllStopsBad)
         } else {
-        res.status(200).send(book[0]);
+        res.status(200).send(stop[0]);
       }
     });
 });
@@ -103,7 +117,7 @@ router.get('/getbystopid/:stop_id', (req, res) => {
     }
   });
 });
-// GETS STOP BY SPEIFIC STOP NAME
+// GETS STOP BY SPECIFIC STOP NAME
 router.get('/getbystopname/:stop_name', (req, res) => {
   console.log(req.params)
   Stops.find({stop_name: req.params.stop_name}, (err, stopByName) => {
