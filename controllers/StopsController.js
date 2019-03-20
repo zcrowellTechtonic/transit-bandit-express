@@ -1,86 +1,78 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const Library = require('../models/Stops');
+const Stops = require('../models/Stops');
 const router = express.Router();
 
 
 import errorMsgs from '../private.js';
 
  router.use(bodyParser.json());
-
+// POST ROUTE FOR ADDING NEW STOPS
 router.post('/', (req, res) => {
-  Library.insertMany(req.body.books, (err, books) => {
+  Stops.insertMany(req.body.stops, (err, stops) => {
     if (err) {
       return res.status(500).send(errorMsgs.postBad);
     } else {
-      return res.status(200).send(books);
+      return res.status(200).send(stops);
     }
   })
 });
-
+// RETRIEVES ALL STOPS FROM DB
 router.get('/', (req, res) => {
-  
-  Library.find({}, function (err, books) {
+  Stops.find({}, function (err, stops) {
     if (err) {
       return res.status(500).send(errorMsgs.getAllBad);
     } else {
-      return res.status(200).send({books:books});
+      return res.status(200).send({stops:stops});
     }
   }).sort({_id: 'asc'});
 });
-
+// BRINGS 5 RESULTS FROM THE DB AT A TIME
 router.get('/paginate/:page/:numResults',(req,res)=>{
-  
   console.log(req.params)
- 
   if (req.params.page) {
     req.params.page = parseInt(req.params.page)
   }
   if (req.params.numResults) {
     req.params.numResults = parseInt(req.params.numResults)
   }
-
   let myResponseObj = {};
-  
-  Library.find({}).limit(req.params.numResults).skip((req.params.page*req.params.numResults) - req.params.numResults).sort({_id: 'asc'}).exec((err,books)=>{
-    Library.count().exec(function (err, count) {
-      myResponseObj.books = books;
+  Stops.find({}).limit(req.params.numResults).skip((req.params.page*req.params.numResults) - req.params.numResults).sort({_id: 'asc'}).exec((err,stops)=>{
+    Stops.count().exec(function (err, count) {
+      myResponseObj.stops = stops;
       myResponseObj.count = count;
       return res.status(200).send(myResponseObj);
     })
   })
 })
-
+// GETS RANDOM STOP FROM DB
 router.get('/random', (req, res) => {
-  
-   Library.aggregate([{
+   Stops.aggregate([{
       $sample: {size: 1}},
-      {$match: {'title': {$exists: true}}}],
+      {$match: {'stop_id': {$exists: true}}}],
       (err, book) => {
         if (err) {
         console.log(err);
-        res.status(500).send(errorMsgs.getShowAllAuthorsBad)
+        res.status(500).send(errorMsgs.getShowAllStopsBad)
         } else {
         res.status(200).send(book[0]);
       }
     });
 });
- 
-router.get('/showAllAuthors', (req, res) => {
-  
-   Library.find({}).distinct("author", (err, authors) => {
+// SHOWS ALL STOPS WITH A UNIQUE NAME
+router.get('/showallstopnames', (req, res) => {
+   Stops.find({}).distinct("stop_name", (err, authors) => {
        if (err) {
        console.log(err);
-       res.status(500).send(errorMsgs.getShowAllAuthorsBad)
+       res.status(500).send(errorMsgs.getShowAllStopsBad)
        } else {
        res.status(200).send(authors);
      }
    });
 });
-
+// GETS STOP BY MONGOOSE ID
 router.get('/:id', (req, res) => {
- 
-  Library.findById({_id: req.params.id}, (err, book) => {
+  Stops.findById({_id: req.params.id}, (err, book) => {
     if (err) {
       if (err) return res.status(500).send(errorMsgs.getByIdBad);
     } else {
@@ -89,53 +81,97 @@ router.get('/:id', (req, res) => {
   });
 });
 
-router.delete('/removeAll', (req, res) => {
-  Library.deleteMany({}, (err, books) => {
-    if (err) {
-      res.status(500).send(errorMsgs.deleteRemoveAllBad);
-    } else {
-      res.status(200).send(errorMsgs.deleteRemoveAll);
-    };
+// GETS STOP BY LATITUDE
+router.get('/getbystoplat/:stop_lat', (req, res) => {
+  console.log(req.params)
+  Stops.find({stop_lat: req.params.stop_lat}, (err, stopByLon) => {
+     if (err) {
+       return res.status(500).send(errorMsgs.deleteByIdBad);
+     } else {
+      res.status(200).send(stopByLon);
+    }
   });
 });
-
-router.delete('/deletebyauthor/:author', (req, res) => {
+// GETS STOP BY SPECIFIC STOP ID
+router.get('/getbystopid/:stop_id', (req, res) => {
+  console.log(req.params)
+  Stops.find({stop_id: req.params.stop_id}, (err, stopById) => {
+     if (err) {
+       return res.status(500).send(errorMsgs.deleteByIdBad);
+     } else {
+      res.status(200).send(stopById);
+    }
+  });
+});
+// GETS STOP BY SPEIFIC STOP NAME
+router.get('/getbystopname/:stop_name', (req, res) => {
+  console.log(req.params)
+  Stops.find({stop_name: req.params.stop_name}, (err, stopByName) => {
+     if (err) {
+       return res.status(500).send(errorMsgs.deleteByIdBad);
+     } else {
+      res.status(200).send(stopByName);
+    }
+  });
+});
+// GETS ALL STOPS BY DIRECTION EX. EAST, WEST...
+router.get('/getstopsbydirection/:stop_desc', (req, res) => {
   
   console.log(req.params)
-  Library.remove({author: req.params.author}, (err, book) => {
+  Stops.find({stop_desc: req.params.stop_desc}, (err, stopByName) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
-      res.status(200).send(book.title + errorMsgs.deleteByIdGood);
+      res.status(200).send(stopByName);
     }
   });
 });
-
-router.delete('/deletebytitle/:title', (req, res) => {
- 
+// DELETES A STOP BY STOP NAME
+router.delete('/deletebystopname/:stop_name', (req, res) => {
   console.log(req.params)
-  Library.remove({title: req.params.title}, (err, book) => {
+  Stops.remove({stop_name: req.params.stop_name}, (err, stop) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
-      res.status(200).send(book.title + errorMsgs.deleteByIdGood);
+      res.status(200).send(stop + errorMsgs.deleteByIdGood);
     }
   });
 });
-
-
+// DELETES STOPS BY STOP DIRECTION EX. ALL EAST, WEST...
+router.delete('/deletebytitle/:stop_desc', (req, res) => {
+  console.log(req.params)
+  Stops.remove({stop_desc: req.params.stop_desc}, (err, stop) => {
+     if (err) {
+       return res.status(500).send(errorMsgs.deleteByIdBad);
+     } else {
+      res.status(200).send(stop + errorMsgs.deleteByIdGood);
+    }
+  });
+});
+// UPDATES A STOP BY SPECIFIC MONGO ID
 router.put('/:id', function (req, res){
- 
-  Library.findByIdAndUpdate(req.params.id, req.body,
+  Stops.findByIdAndUpdate(req.params.id, req.body,
  {new: true},
- (err, book) => {
+ (err, stop) => {
    if(err) {
      return res.status(500).send(errorMsgs.putByIdBad);
  } else {
-   return res.status(200).send(book);
+   return res.status(200).send(stop);
  }
 })
 });
+
+// ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
+
+// router.delete('/removeAll', (req, res) => {
+//   Stops.deleteMany({}, (err, books) => {
+//     if (err) {
+//       res.status(500).send(errorMsgs.deleteRemoveAllBad);
+//     } else {
+//       res.status(200).send(errorMsgs.deleteRemoveAll);
+//     };
+//   });
+// });
 
 
 
