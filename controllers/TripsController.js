@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const Stops = require('../models/Trips');
+const Trips = require('../models/Trips');
 const router = express.Router();
 
 
@@ -9,35 +9,35 @@ import errorMsgs from '../private.js';
  router.use(bodyParser.json());
 // POST ROUTE FOR ADDING NEW STOPS
 router.post('/', (req, res) => {
-  Stops.insertMany(req.body.stops, (err, stops) => {
+  Trips.insertMany(req.body, (err, trips) => {
     if (err) {
       return res.status(500).send(errorMsgs.postBad);
     } else {
-      return res.status(200).send(stops);
+      return res.status(200).send(trips);
     }
   })
 });
 
 // RETRIEVES ALL STOPS FROM DB
 router.get('/', (req, res) => {
-  Stops.find({}, function (err, stops) {
+  Trips.find({}, function (err, trips) {
     if (err) {
       return res.status(500).send(errorMsgs.getAllBad);
     } else {
-      return res.status(200).send(stops);
+      return res.status(200).send(trips);
     }
   }).sort({_id: 'asc'});
 });
 // BRINGS FIRST 5 RESULTS AT A TIME FOR TESTING
 router.get('/firstfive', (req, res) => {
-  Stops.find({})
+  Trips.find({})
   .skip((1-1)*5)
   .limit(5)
-  .exec(function (err, stops) {
+  .exec(function (err, trips) {
     if (err) {
       return res.status(500).send(errorMsgs.getAllBad);
     } else {
-      return res.status(200).send(stops);
+      return res.status(200).send(trips);
     }
   })
 });
@@ -51,9 +51,9 @@ router.get('/paginate/:page/:numResults',(req,res)=>{
     req.params.numResults = parseInt(req.params.numResults)
   }
   let myResponseObj = {};
-  Stops.find({}).limit(req.params.numResults).skip((req.params.page*req.params.numResults) - req.params.numResults).sort({_id: 'asc'}).exec((err,stops)=>{
-    Stops.count().exec(function (err, count) {
-      myResponseObj.stops = stops;
+  Trips.find({}).limit(req.params.numResults).skip((req.params.page*req.params.numResults) - req.params.numResults).sort({_id: 'asc'}).exec((err,trips)=>{
+    Trips.count().exec(function (err, count) {
+      myResponseObj.trips = trips;
       myResponseObj.count = count;
       return res.status(200).send(myResponseObj);
     })
@@ -61,36 +61,92 @@ router.get('/paginate/:page/:numResults',(req,res)=>{
 })
 // GETS RANDOM STOP FROM DB
 router.get('/random', (req, res) => {
-   Stops.aggregate([{
+   Trips.aggregate([{
       $sample: {size: 1}},
-      {$match: {'stop_id': {$exists: true}}}],
-      (err, stop) => {
+      {$match: {'trip_id': {$exists: true}}}],
+      (err, trip) => {
         if (err) {
         console.log(err);
         res.status(500).send(errorMsgs.getShowAllStopsBad)
         } else {
-        res.status(200).send(stop[0]);
+        res.status(200).send(trip[0]);
       }
     });
 });
-// SHOWS ALL STOPS WITH A UNIQUE NAME
-router.get('/showallstopnames', (req, res) => {
-   Stops.find({}).distinct("stop_name", (err, authors) => {
+
+
+
+router.get('/showallheadsigns', (req, res) => {
+   Trips.find({}).distinct("trip_headsign", (err, trips) => {
        if (err) {
        console.log(err);
        res.status(500).send(errorMsgs.getShowAllStopsBad)
        } else {
-       res.status(200).send(authors);
+       res.status(200).send(trips);
      }
    });
 });
+
+router.get('/showallroutenames', (req, res) => {
+  Trips.find({}).distinct("route_id", (err, trips) => {
+      if (err) {
+      console.log(err);
+      res.status(500).send(errorMsgs.getShowAllStopsBad)
+      } else {
+        const tripStrings = trips.map(items => String(items));
+      res.status(200).send(tripStrings);
+    }
+  });
+});
+
+router.get('/tripid/:trip_id', (req, res) => {
+  console.log(req.params)
+  Trips.find({trip_id: req.params.trip_id}, (err, trips) => {
+      if (err) {
+      console.log(err);
+      res.status(500).send(errorMsgs.getShowAllStopsBad)
+      } else {
+      res.status(200).send(trips);
+    }
+  });
+});
+
+router.get('/headsign/getbyheadsign', (req, res) => {
+  console.log(req.body)
+  let id = req.body.route_id
+  let headsign = req.body.headsign
+  Trips.find({
+    route_id: req.params.route_id,
+    trip_headsign: req.params.headsign
+  }, (err, trips) => {
+      if (err) {
+      console.log(err);
+      res.status(500).send(errorMsgs.getShowAllStopsBad)
+      } else {
+      res.status(200).send(trips);
+    }
+  });
+});
+
+router.get('/tripheadsign/:trip_headsign', (req, res) => {
+   Trips.find({trip_headsign: req.params.trip_headsign}, (err, trips) => {
+       if (err) {
+       console.log(err);
+       res.status(500).send(errorMsgs.getShowAllStopsBad)
+       } else {
+       res.status(200).send(trips);
+     }
+   });
+});
+
+
 // GETS STOP BY MONGOOSE ID
 router.get('/:id', (req, res) => {
-  Stops.findById({_id: req.params.id}, (err, book) => {
+  Trips.findById({_id: req.params.id}, (err, trip) => {
     if (err) {
       if (err) return res.status(500).send(errorMsgs.getByIdBad);
     } else {
-      res.status(200).send(book)
+      res.status(200).send(trip)
     }
   });
 });
@@ -98,18 +154,18 @@ router.get('/:id', (req, res) => {
 // GETS STOP BY LATITUDE
 router.get('/getbystoplat/:stop_lat', (req, res) => {
   console.log(req.params)
-  Stops.find({stop_lat: req.params.stop_lat}, (err, stopByLon) => {
+  Trips.find({stop_lat: req.params.trip_lat}, (err, tripByLon) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
-      res.status(200).send(stopByLon);
+      res.status(200).send(tripByLon);
     }
   });
 });
 // GETS STOP BY SPECIFIC STOP ID
 router.get('/getbystopid/:stop_id', (req, res) => {
   console.log(req.params)
-  Stops.find({stop_id: req.params.stop_id}, (err, stopById) => {
+  Trips.find({stop_id: req.params.stop_id}, (err, stopById) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
@@ -120,7 +176,7 @@ router.get('/getbystopid/:stop_id', (req, res) => {
 // GETS STOP BY SPECIFIC STOP NAME
 router.get('/getbystopname/:stop_name', (req, res) => {
   console.log(req.params)
-  Stops.find({stop_name: req.params.stop_name}, (err, stopByName) => {
+  Trips.find({stop_name: req.params.stop_name}, (err, stopByName) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
@@ -132,7 +188,7 @@ router.get('/getbystopname/:stop_name', (req, res) => {
 router.get('/getstopsbydirection/:stop_desc', (req, res) => {
   
   console.log(req.params)
-  Stops.find({stop_desc: req.params.stop_desc}, (err, stopByName) => {
+  Trips.find({stop_desc: req.params.stop_desc}, (err, stopByName) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
@@ -143,7 +199,7 @@ router.get('/getstopsbydirection/:stop_desc', (req, res) => {
 // DELETES A STOP BY STOP NAME
 router.delete('/deletebystopname/:stop_name', (req, res) => {
   console.log(req.params)
-  Stops.remove({stop_name: req.params.stop_name}, (err, stop) => {
+  Trips.remove({stop_name: req.params.stop_name}, (err, stop) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
@@ -154,7 +210,7 @@ router.delete('/deletebystopname/:stop_name', (req, res) => {
 // DELETES STOPS BY STOP DIRECTION EX. ALL EAST, WEST...
 router.delete('/deletebytitle/:stop_desc', (req, res) => {
   console.log(req.params)
-  Stops.remove({stop_desc: req.params.stop_desc}, (err, stop) => {
+  Trips.remove({stop_desc: req.params.stop_desc}, (err, stop) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
@@ -164,7 +220,7 @@ router.delete('/deletebytitle/:stop_desc', (req, res) => {
 });
 // UPDATES A STOP BY SPECIFIC MONGO ID
 router.put('/:id', function (req, res){
-  Stops.findByIdAndUpdate(req.params.id, req.body,
+  Trips.findByIdAndUpdate(req.params.id, req.body,
  {new: true},
  (err, stop) => {
    if(err) {
