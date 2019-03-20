@@ -9,12 +9,6 @@ import errorMsgs from '../private.js';
  router.use(bodyParser.json());
 
 router.post('/', (req, res) => {
-  // May need to remove later
-  console.log(req.body)
-  for(let i = 0; i < req.body.books.length; i++){
-    req.body.books[i].userID = req.user._doc._id;
-  }
-  // const request = req.body.books || req.body;
   Library.insertMany(req.body.books, (err, books) => {
     if (err) {
       return res.status(500).send(errorMsgs.postBad);
