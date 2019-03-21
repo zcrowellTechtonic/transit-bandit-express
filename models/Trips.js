@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const TripsSchema = new mongoose.Schema({
-    route_id : Number,
+    route_id : String,
     service_id : String,
     trip_id : Number,
     trip_headsign : String,

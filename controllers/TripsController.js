@@ -111,22 +111,18 @@ router.get('/tripid/:trip_id', (req, res) => {
   });
 });
 
-router.get('/headsign/getbyheadsign', (req, res) => {
-  console.log(req.body)
-  let id = req.body.route_id
-  let headsign = req.body.headsign
-  Trips.find({
-    route_id: req.params.route_id,
-    trip_headsign: req.params.headsign
-  }, (err, trips) => {
-      if (err) {
-      console.log(err);
-      res.status(500).send(errorMsgs.getShowAllStopsBad)
-      } else {
-      res.status(200).send(trips);
-    }
-  });
-});
+// router.get('/headsign/getbyheadsign', (req, res) => {
+//   console.log(req.body)
+//   let id = req.body.route_id;
+//   Trips.find({route_id: id}, (err, trips) => {
+//       if (err) {
+//       console.log(err);
+//       res.status(500).send(errorMsgs.getShowAllStopsBad)
+//       } else {
+//       res.status(200).send(trips);
+//     }
+//   });
+// });
 
 router.get('/tripheadsign/:trip_headsign', (req, res) => {
    Trips.find({trip_headsign: req.params.trip_headsign}, (err, trips) => {
@@ -234,7 +230,7 @@ router.put('/:id', function (req, res){
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
 
 // router.delete('/removeAll', (req, res) => {
-//   Stops.deleteMany({}, (err, books) => {
+//   Trips.deleteMany({}, (err, books) => {
 //     if (err) {
 //       res.status(500).send(errorMsgs.deleteRemoveAllBad);
 //     } else {
