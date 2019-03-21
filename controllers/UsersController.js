@@ -21,7 +21,8 @@ router.post('/', (req, res) => {
       })
     });
 
-// RETRIEVES ALL Users FROM DB
+
+// // RETRIEVES ALL Users FROM DB
 router.get('/', (req, res) => {
   Users.find({}, function (err, users) {
     if (err) {
@@ -31,6 +32,8 @@ router.get('/', (req, res) => {
     }
   }).sort({_id: 'asc'});
 });
+
+
 // // BRINGS FIRST 5 RESULTS AT A TIME FOR TESTING
 // router.get('/firstfive', (req, res) => {
 //   Users.find({})
@@ -66,7 +69,7 @@ router.get('/', (req, res) => {
 router.get('/random', (req, res) => {
    Users.aggregate([{
       $sample: {size: 1}},
-      {$match: {'stop_id': {$exists: true}}}],
+      {$match: {'uid': {$exists: true}}}],
       (err, user) => {
         if (err) {
         console.log(err);
@@ -88,8 +91,19 @@ router.get('/random', (req, res) => {
 //    });
 // });
 // GETS USER BY MONGOOSE ID
-router.get('/:id', (req, res) => {
-  Users.findById({_id: req.params.id}, (err, user) => {
+// router.get('/:id', (req, res) => {
+//   Users.findById({uid: user.uid}, (err, user) => {
+//     if (err) {
+//       if (err) return res.status(500).send(errorMsgs.getByIdBad);
+//     } else {
+//       res.status(200).send(user)
+//     }
+//   });
+// });
+
+router.get('/getbyuid/:uid', (req, res) => {
+  console.log(req.params)
+  Users.find({uid: req.params.uid}, (err, user) => {
     if (err) {
       if (err) return res.status(500).send(errorMsgs.getByIdBad);
     } else {
@@ -97,6 +111,10 @@ router.get('/:id', (req, res) => {
     }
   });
 });
+
+
+
+
 
 // GETS STOP BY LATITUDE
 // router.get('/getbystoplat/:stop_lat', (req, res) => {
