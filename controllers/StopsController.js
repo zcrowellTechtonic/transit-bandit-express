@@ -8,12 +8,14 @@ import errorMsgs from '../private.js';
 
  router.use(bodyParser.json());
 // POST ROUTE FOR ADDING NEW STOPS
+
 router.post('/', (req, res) => {
-  Stops.insertMany(req.body.stops, (err, stops) => {
+  console.log(req.body)
+  Stops.insertMany(req.body.Stops, (err, Stops) => {
     if (err) {
       return res.status(500).send(errorMsgs.postBad);
     } else {
-      return res.status(200).send(stops);
+      return res.status(200).send(Stops);
     }
   })
 });
@@ -31,8 +33,8 @@ router.get('/', (req, res) => {
 // BRINGS FIRST 5 RESULTS AT A TIME FOR TESTING
 router.get('/firstfive', (req, res) => {
   Stops.find({})
-  .skip((1-1)*5)
-  .limit(5)
+  .skip((1-1)*200)
+  .limit(200)
   .exec(function (err, stops) {
     if (err) {
       return res.status(500).send(errorMsgs.getAllBad);
@@ -177,15 +179,15 @@ router.put('/:id', function (req, res){
 
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
 
-// router.delete('/removeAll', (req, res) => {
-//   Stops.deleteMany({}, (err, books) => {
-//     if (err) {
-//       res.status(500).send(errorMsgs.deleteRemoveAllBad);
-//     } else {
-//       res.status(200).send(errorMsgs.deleteRemoveAll);
-//     };
-//   });
-// });
+router.delete('/removeAll', (req, res) => {
+  Stops.deleteMany({}, (err, books) => {
+    if (err) {
+      res.status(500).send(errorMsgs.deleteRemoveAllBad);
+    } else {
+      res.status(200).send(errorMsgs.deleteRemoveAll);
+    };
+  });
+});
 
 
 
