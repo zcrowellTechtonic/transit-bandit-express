@@ -185,6 +185,7 @@ router.get('/getbyuid/:uid', (req, res) => {
 // });
 // UPDATES A STOP BY SPECIFIC MONGO ID
 router.put('/:id', function (req, res){
+  console.log(req.body)
   Users.findByIdAndUpdate(req.params.id, req.body,
  {new: true},
  (err, stop) => {
