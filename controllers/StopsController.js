@@ -108,6 +108,21 @@ router.get('/getbystoplat/:stop_lat', (req, res) => {
     }
   });
 });
+// THIS BRINGS BACK A LIMITED SEARCH RESULT BETWEEN TWO SETS OF COORDINATES
+router.get('/getbystopbycords/stops', (req, res) => {
+  console.log(req.params)
+  Stops.find(
+{ $and:[
+    {stop_lat : { $gt: 39.70446}, stop_lon : { $gt: -105.11505}},
+    {stop_lat : { $lt: 40.00005}, stop_lon : { $lt: -105.1110}}
+    ]}, (err, stops) => {
+     if (err) {
+       return res.status(500).send(errorMsgs.deleteByIdBad);
+     } else {
+      res.status(200).send(stops);
+    }
+  });
+});
 // GETS STOP BY SPECIFIC STOP ID
 router.get('/getbystopid/:stop_id', (req, res) => {
   console.log(req.params)
@@ -179,15 +194,15 @@ router.put('/:id', function (req, res){
 
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
 
-router.delete('/removeAll', (req, res) => {
-  Stops.deleteMany({}, (err, books) => {
-    if (err) {
-      res.status(500).send(errorMsgs.deleteRemoveAllBad);
-    } else {
-      res.status(200).send(errorMsgs.deleteRemoveAll);
-    };
-  });
-});
+// router.delete('/removeAll', (req, res) => {
+//   Stops.deleteMany({}, (err, books) => {
+//     if (err) {
+//       res.status(500).send(errorMsgs.deleteRemoveAllBad);
+//     } else {
+//       res.status(200).send(errorMsgs.deleteRemoveAll);
+//     };
+//   });
+// });
 
 
 
