@@ -6,6 +6,7 @@ const cors = require('cors');
 
 import StopsController from './controllers/StopsController';
 import TripsController from './controllers/TripsController';
+import UsersController from './controllers/UsersController';
 
 const port = process.env.PORT || 3001;
 
@@ -14,6 +15,7 @@ app.use(cors());
 
 app.use('/stops', StopsController);
 app.use('/trips', TripsController);
+app.use('/users', UsersController);
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));
 
