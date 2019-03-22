@@ -8,12 +8,14 @@ import errorMsgs from '../private.js';
 
  router.use(bodyParser.json());
 // POST ROUTE FOR ADDING NEW STOPS
+
 router.post('/', (req, res) => {
-  Stops.insertMany(req.body.stops, (err, stops) => {
+  console.log(req.body)
+  Stops.insertMany(req.body.Stops, (err, Stops) => {
     if (err) {
       return res.status(500).send(errorMsgs.postBad);
     } else {
-      return res.status(200).send(stops);
+      return res.status(200).send(Stops);
     }
   })
 });
@@ -31,8 +33,8 @@ router.get('/', (req, res) => {
 // BRINGS FIRST 5 RESULTS AT A TIME FOR TESTING
 router.get('/firstfive', (req, res) => {
   Stops.find({})
-  .skip((1-1)*5)
-  .limit(5)
+  .skip((1-1)*200)
+  .limit(200)
   .exec(function (err, stops) {
     if (err) {
       return res.status(500).send(errorMsgs.getAllBad);
@@ -103,6 +105,21 @@ router.get('/getbystoplat/:stop_lat', (req, res) => {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
       res.status(200).send(stopByLon);
+    }
+  });
+});
+// THIS BRINGS BACK A LIMITED SEARCH RESULT BETWEEN TWO SETS OF COORDINATES
+router.get('/getbystopbycords/stops', (req, res) => {
+  console.log(req.params)
+  Stops.find(
+{ $and:[
+    {stop_lat : { $gt: 39.70446}, stop_lon : { $gt: -105.11505}},
+    {stop_lat : { $lt: 40.00005}, stop_lon : { $lt: -105.1110}}
+    ]}, (err, stops) => {
+     if (err) {
+       return res.status(500).send(errorMsgs.deleteByIdBad);
+     } else {
+      res.status(200).send(stops);
     }
   });
 });
