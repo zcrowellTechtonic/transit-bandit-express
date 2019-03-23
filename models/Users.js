@@ -14,7 +14,7 @@ const UsersSchema = new mongoose.Schema({
 
     uid: String,
     email: String,
-    phone: String,
+    phoneNumber: String,
     emailNote: Boolean,
     textNote: Boolean,
     callNote: Boolean,
