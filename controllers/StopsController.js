@@ -123,6 +123,26 @@ router.get('/getbystopbycords/stops', (req, res) => {
     }
   });
 });
+// BRINGS BACK A LIMITED SET OF LAT/LONG PASSING IN CORDS FROM FRONT
+router.get('/getbystopbycords', (req, res) => {
+  // req.body: {
+  //  loc1: {lat: xxx, long: xxx},
+  //  loc2: {lat: xxx, long: xxx}
+  // }
+  const {loc1, loc2} = req.body;
+  console.log(req.params)
+  Stops.find(
+{ $and:[
+    {stop_lat : { $gt: loc1.lat}, stop_lon : { $gt: loc1.long}},
+    {stop_lat : { $lt: loc2.lat}, stop_lon : { $lt: loc2.long}}
+    ]}, (err, stops) => {
+     if (err) {
+       return res.status(500).send(errorMsgs.deleteByIdBad);
+     } else {
+      res.status(200).send(stops);
+    }
+  });
+});
 // GETS STOP BY SPECIFIC STOP ID
 router.get('/getbystopid/:stop_id', (req, res) => {
   console.log(req.params)
