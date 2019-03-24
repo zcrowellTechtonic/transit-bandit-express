@@ -108,13 +108,30 @@ router.get('/getbystoplat/:stop_lat', (req, res) => {
     }
   });
 });
-// THIS BRINGS BACK A LIMITED SEARCH RESULT BETWEEN TWO SETS OF COORDINATES
+// THIS BRINGS BACK A LIMITED SEARCH RESULT GREATER THAN ONE SET OF COORDINATES
 router.get('/getbystopbycords/stops', (req, res) => {
   console.log(req.params)
   Stops.find(
 { $and:[
-  {stop_lat : { $gt: req.headers.stop_lat}, stop_lon : { $gt: req.headers.stop_lon}},
+  {stop_lat : { $gt: req.headers.stop_lat}, stop_lon : { $lt: req.headers.stop_lat}},
 //     {stop_lat : { $lt: 41.8400000}, stop_lon : { $lt: -105.99175249999999}}
+  ]}).limit(50).exec( (err, stops) => {
+     if (err) {
+       return res.status(500).send(errorMsgs.deleteByIdBad);
+     } else {
+      res.status(200).send(stops);
+    }
+  });
+});
+
+router.get('/getbystopbycords/bounds', (req, res) => {
+  console.log(req.params)
+  Stops.find(
+{ $and:[
+    {ne_lat : { $gt: req.headers.ne_lat}, ne_lon : { $gt: req.headers.ne_lon}},
+    {se_lat : { $lt: req.headers.se_lat}, se_lon : { $lt: req.headers.se_lon}},
+    {sw_lat : { $lt: req.headers.sw_lat}, se_lon : { $lt: req.headers.sw_lon}},
+    {nw_lat : { $lt: req.headers.nw_lat}, se_lon : { $lt: req.headers.nw_lon}},
   ]}).limit(50).exec( (err, stops) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
