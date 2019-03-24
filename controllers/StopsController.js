@@ -115,7 +115,7 @@ router.get('/getbystopbycords/stops', (req, res) => {
 { $and:[
   {stop_lat : { $gt: req.headers.stop_lat}, stop_lon : { $lt: req.headers.stop_lat}},
 //     {stop_lat : { $lt: 41.8400000}, stop_lon : { $lt: -105.99175249999999}}
-  ]}).limit(50).exec( (err, stops) => {
+  ]}).limit(100).exec( (err, stops) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
