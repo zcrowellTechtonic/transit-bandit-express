@@ -124,6 +124,22 @@ router.get('/getbystopbycords/stops', (req, res) => {
   });
 });
 
+router.get('/getbystopbycords/populate', (req, res) => {
+  console.log(req.headers)
+  Stops.find(
+{ $and:[
+  {stop_lat : { $gt: req.headers.stop_lat1}, stop_lon : { $lt: req.headers.stop_lon1}},
+  {stop_lat : { $gt: req.headers.stop_lat2}, stop_lon : { $lt: req.headers.stop_lon2}}
+  ]}).limit(100).exec( (err, stops) => {
+     if (err) {
+       return res.status(500).send(errorMsgs.deleteByIdBad);
+     } else {
+      res.status(200).send(stops);
+    }
+  });
+});
+
+
 router.get('/getbystopbycords/bounds', (req, res) => {
   console.log(req.params)
   Stops.find(
