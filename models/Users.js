@@ -12,9 +12,11 @@ const UsersSchema = new mongoose.Schema({
     // },
     // favRoutes: []
 
-    uid: String,
+    // _id: String,
+    _id: String,
+    name: String,
     email: String,
-    phone: String,
+    phoneNumber: String,
     emailNote: Boolean,
     textNote: Boolean,
     callNote: Boolean,

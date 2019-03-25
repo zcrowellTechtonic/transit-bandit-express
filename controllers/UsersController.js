@@ -11,8 +11,8 @@ import errorMsgs from '../private.js';
 
 // POST ROUTE FOR ADDING NEW USERS
 router.post('/', (req, res) => {
-        // console.log(req.body)
-      Users.insertMany(req.body, (err, user) => {
+        console.log('From the backend', req.body)
+      Users.create(req.body, (err, user) => {
         if (err) {
           return res.status(500).send(errorMsgs.postBad);
         } else {
@@ -101,7 +101,7 @@ router.get('/random', (req, res) => {
 //   });
 // });
 
-router.get('/getbyuid/:uid', (req, res) => {
+router.get('/getbyid/:_id', (req, res) => {
   console.log(req.params)
   Users.find({uid: req.params.uid}, (err, user) => {
     if (err) {
