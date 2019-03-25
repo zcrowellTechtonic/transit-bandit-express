@@ -11,8 +11,8 @@ import errorMsgs from '../private.js';
 
 // POST ROUTE FOR ADDING NEW USERS
 router.post('/', (req, res) => {
-        // console.log(req.body)
-      Users.insertMany(req.body, (err, user) => {
+        console.log('From the backend', req.body)
+      Users.create(req.body, (err, user) => {
         if (err) {
           return res.status(500).send(errorMsgs.postBad);
         } else {
@@ -50,7 +50,6 @@ router.get('/', (req, res) => {
 
 router.put('/:id', function (req, res){
   console.log(req.body)
-
   Users.findByIdAndUpdate(req.params.id, req.body, 
     {new: true}, (err, users) => {
     if (err) {
@@ -62,23 +61,22 @@ router.put('/:id', function (req, res){
 });
 
 
-
 // GETS RANDOM User FROM DB
-router.get('/random', (req, res) => {
-   Users.aggregate([{
-      $sample: {size: 1}},
-      {$match: {'uid': {$exists: true}}}],
-      (err, user) => {
-        if (err) {
-        console.log(err);
-        res.status(500).send(errorMsgs.getShowAllStopsBad)
-        } else {
-        res.status(200).send(user[0]);
-      }
-    });
-});
+// router.get('/random', (req, res) => {
+//    Users.aggregate([{
+//       $sample: {size: 1}},
+//       {$match: {'uid': {$exists: true}}}],
+//       (err, user) => {
+//         if (err) {
+//         console.log(err);
+//         res.status(500).send(errorMsgs.getShowAllStopsBad)
+//         } else {
+//         res.status(200).send(user[0]);
+//       }
+//     });
+// });
 
-router.get('/getbyuid/:uid', (req, res) => {
+router.get('/getbyid/:_id', (req, res) => {
   console.log(req.params)
   Users.find({uid: req.params.uid}, (err, user) => {
     if (err) {
@@ -88,10 +86,6 @@ router.get('/getbyuid/:uid', (req, res) => {
     }
   });
 });
-
-
-
-
 
 
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
