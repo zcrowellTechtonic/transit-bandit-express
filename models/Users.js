@@ -15,7 +15,7 @@ const UsersSchema = new mongoose.Schema({
     _id: String,
     name: String,
     email: String,
-    phone: String,
+    phoneNumber: String,
     emailNote: Boolean,
     textNote: Boolean,
     callNote: Boolean,

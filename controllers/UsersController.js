@@ -101,9 +101,9 @@ router.get('/random', (req, res) => {
 //   });
 // });
 
-router.get('/getbyuid/:uid', (req, res) => {
+router.get('/getbyuid/:_id', (req, res) => {
   console.log(req.params)
-  Users.find({uid: req.params.uid}, (err, user) => {
+  Users.findOne({_id: req.params._id}, (err, user) => {
     if (err) {
       if (err) return res.status(500).send(errorMsgs.getByIdBad);
     } else {
@@ -111,9 +111,6 @@ router.get('/getbyuid/:uid', (req, res) => {
     }
   });
 });
-
-
-
 
 
 // GETS STOP BY LATITUDE
