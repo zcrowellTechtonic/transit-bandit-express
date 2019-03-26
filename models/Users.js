@@ -11,8 +11,6 @@ const UsersSchema = new mongoose.Schema({
     // call: Boolean
     // },
     // favRoutes: []
-
-
     _id: String,
     name: String,
     email: String,
