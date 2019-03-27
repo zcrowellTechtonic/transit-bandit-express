@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+// REMOVE BPDY PARSER
 const Stops = require('../models/Stops');
 const router = express.Router();
+// IF IN SAME FILE PORBBALY NO ROUTER
 
 
 import errorMsgs from '../private.js';
@@ -96,7 +98,6 @@ router.get('/:id', (req, res) => {
     }
   });
 });
-
 // GETS STOP BY LATITUDE
 router.get('/getbystoplat/:stop_lat', (req, res) => {
   console.log(req.params)
@@ -115,7 +116,7 @@ router.get('/getbystopbycords/stops', (req, res) => {
 { $and:[
   {stop_lat : { $gt: req.headers.stop_lat}, stop_lon : { $lt: req.headers.stop_lat}},
 //     {stop_lat : { $lt: 41.8400000}, stop_lon : { $lt: -105.99175249999999}}
-  ]}).limit(100).exec( (err, stops) => {
+  ]}).limit(50).exec( (err, stops) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
@@ -163,7 +164,7 @@ router.get('/getbystopbycords', (req, res) => {
 // GETS STOP BY SPECIFIC STOP ID
 router.get('/getbystopid/:stop_id', (req, res) => {
   console.log(req.params)
-  Stops.find({stop_id: req.params.stop_id}, (err, stopById) => {
+  Stops.findOne({stop_id: req.params.stop_id}, (err, stopById) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
