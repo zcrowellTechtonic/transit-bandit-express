@@ -115,7 +115,7 @@ router.get('/getbystopbycords/stops', (req, res) => {
 { $and:[
   {stop_lat : { $gt: req.headers.stop_lat}, stop_lon : { $lt: req.headers.stop_lat}},
 //     {stop_lat : { $lt: 41.8400000}, stop_lon : { $lt: -105.99175249999999}}
-  ]}).limit(100).exec( (err, stops) => {
+  ]}).limit(10).exec( (err, stops) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
@@ -125,16 +125,17 @@ router.get('/getbystopbycords/stops', (req, res) => {
 });
 
 router.get('/getbystopbycords/populate', (req, res) => {
-  console.log(req.headers)
+  // console.log(req.headers)
   Stops.find(
 { $and:[
   {stop_lat : { $gt: req.headers.stop_lat1}, stop_lon : { $lt: req.headers.stop_lon1}},
-  {stop_lat : { $gt: req.headers.stop_lat2}, stop_lon : { $lt: req.headers.stop_lon2}}
-  ]}).limit(100).exec( (err, stops) => {
+  {stop_lat : { $lt: req.headers.stop_lat2}, stop_lon : { $gt: req.headers.stop_lon2}}
+  ]}).limit(10).exec( (err, stops) => {
      if (err) {
        return res.status(500).send(errorMsgs.deleteByIdBad);
      } else {
       res.status(200).send(stops);
+      console.log(res)
     }
   });
 });
