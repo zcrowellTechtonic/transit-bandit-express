@@ -20,5 +20,7 @@ module.exports = {
   putByUserIdBad: "Could not update user.",
   putByTripIdBad: "Could not update trip.",
   deleteRemoveAll: "Stops successfully deleted",
+  deleteRemoveAllTrips: "Trips successfully deleted",
+  deleteRemoveAllUsers: "Users successfully deleted",
   deleteRemoveAllBad: "Oops something went wrong",
 };

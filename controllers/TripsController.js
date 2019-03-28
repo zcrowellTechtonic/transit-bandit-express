@@ -221,7 +221,7 @@ router.put('/:id', function (req, res){
 //     if (err) {
 //       res.status(500).send(errorMsgs.deleteRemoveAllBad);
 //     } else {
-//       res.status(200).send(errorMsgs.deleteRemoveAll);
+//       res.status(200).send(errorMsgs.deleteRemoveAllTrips);
 //     };
 //   });
 // });
