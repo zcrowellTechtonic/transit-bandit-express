@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const Users = require('../models/Users');
 const router = express.Router();
 
-
 import errorMsgs from '../private.js';
 
  router.use(bodyParser.json());
@@ -78,9 +77,11 @@ router.get('/random', (req, res) => {
     });
 });
 
-router.get('/getbyid/:_id', (req, res) => {
+
+router.get('/getbyuid/:_id', (req, res) => {
+
   console.log(req.params)
-  Users.find({uid: req.params.uid}, (err, user) => {
+  Users.findOne({_id: req.params._id}, (err, user) => {
     if (err) {
       if (err) return res.status(500).send(errorMsgs.getByIdBad);
     } else {
@@ -89,9 +90,19 @@ router.get('/getbyid/:_id', (req, res) => {
   });
 });
 
-
-
-
+// UPDATES A STOP BY SPECIFIC MONGO ID
+router.put('/:id', function (req, res){
+  console.log(req.body)
+  Users.findByIdAndUpdate(req.params.id, req.body,
+ {new: true},
+ (err, stop) => {
+   if(err) {
+     return res.status(500).send(errorMsgs.putByIdBad);
+ } else {
+   return res.status(200).send(stop);
+ }
+})
+});
 
 
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!

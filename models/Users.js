@@ -1,17 +1,5 @@
 const mongoose = require('mongoose');
 const UsersSchema = new mongoose.Schema({
-    // _id: String,
-    // contact: {
-    // email: String,
-    // phone: String
-    // },
-    // notifications: {
-    // email: Boolean,
-    // text: Boolean,
-    // call: Boolean
-    // },
-    // favRoutes: []
-
 
     _id: String,
     name: String,
