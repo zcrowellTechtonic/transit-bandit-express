@@ -89,7 +89,9 @@ router.get('/getbyuid/:_id', (req, res) => {
   });
 });
 
+
 // UPDATES A USER BY SPECIFIC MONGO ID
+
 router.put('/:id', function (req, res){
   console.log(req.body)
   Users.findByIdAndUpdate(req.params.id, req.body,
