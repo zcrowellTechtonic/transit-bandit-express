@@ -76,10 +76,6 @@ router.get('/random', (req, res) => {
       }
     });
 });
-<<<<<<< HEAD
-=======
-
->>>>>>> 58804129065023d12a041ae60a40c038f351d101
 
 // GETS USER BY MONGOOSE ID
 router.get('/getbyuid/:_id', (req, res) => {
@@ -94,10 +90,6 @@ router.get('/getbyuid/:_id', (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 58804129065023d12a041ae60a40c038f351d101
 // UPDATES A STOP BY SPECIFIC MONGO ID
 router.put('/:id', function (req, res){
   console.log(req.body)
