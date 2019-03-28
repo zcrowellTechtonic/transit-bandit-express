@@ -10,8 +10,8 @@ import errorMsgs from '../private.js';
 
 // POST ROUTE FOR ADDING NEW USERS
 router.post('/', (req, res) => {
-        // console.log(req.body)
-      Users.insertMany(req.body, (err, user) => {
+        console.log('From the backend', req.body)
+      Users.create(req.body, (err, user) => {
         if (err) {
           return res.status(500).send(errorMsgs.postBad);
         } else {
@@ -32,38 +32,36 @@ router.get('/', (req, res) => {
   }).sort({_id: 'asc'});
 });
 
-
-// // BRINGS FIRST 5 RESULTS AT A TIME FOR TESTING
-// router.get('/firstfive', (req, res) => {
-//   Users.find({})
-//   .skip((1-1)*5)
-//   .limit(5)
-//   .exec(function (err, users) {
+//************EDIT USER INFO */
+// router.put('/:id', function (req, res){
+//   console.log(req.body)
+//   Users.findByIdAndUpdate(req.params.id, {
+//     email: req.body.email
+//   }, 
+//     {new: true}, (err, users) => {
 //     if (err) {
-//       return res.status(500).send(errorMsgs.getAllBad);
-//     } else {
-//       return res.status(200).send(users);
-//     }
-//   })
+//       return res.status(500).send(errorMsgs.putByIdBad);
+//     }else{
+//     return res.status(200).send(users);
+//      }
+//    });
 // });
-// // BRINGS ONE PAGE OF FIVE  RESULTS FROM THE DB AT A TIME
-// router.get('/paginate/:page/:numResults',(req,res)=>{
-//   console.log(req.params)
-//   if (req.params.page) {
-//     req.params.page = parseInt(req.params.page)
-//   }
-//   if (req.params.numResults) {
-//     req.params.numResults = parseInt(req.params.numResults)
-//   }
-//   let myResponseObj = {};
-//   Users.find({}).limit(req.params.numResults).skip((req.params.page*req.params.numResults) - req.params.numResults).sort({_id: 'asc'}).exec((err,stops)=>{
-//     Users.count().exec(function (err, count) {
-//       myResponseObj.stops = stops;
-//       myResponseObj.count = count;
-//       return res.status(200).send(myResponseObj);
-//     })
-//   })
-// })
+
+router.put('/:id', function (req, res){
+  console.log(req.body)
+
+  Users.findByIdAndUpdate(req.params.id, req.body, 
+    {new: true}, (err, users) => {
+    if (err) {
+      return res.status(500).send(errorMsgs.putByIdBad);
+    }else{
+    return res.status(200).send(users);
+     }
+   });
+});
+
+
+
 // GETS RANDOM User FROM DB
 router.get('/random', (req, res) => {
    Users.aggregate([{
@@ -78,9 +76,14 @@ router.get('/random', (req, res) => {
       }
     });
 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 58804129065023d12a041ae60a40c038f351d101
 
 // GETS USER BY MONGOOSE ID
 router.get('/getbyuid/:_id', (req, res) => {
+
   console.log(req.params)
   Users.findOne({_id: req.params._id}, (err, user) => {
     if (err) {
@@ -91,7 +94,10 @@ router.get('/getbyuid/:_id', (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 58804129065023d12a041ae60a40c038f351d101
 // UPDATES A STOP BY SPECIFIC MONGO ID
 router.put('/:id', function (req, res){
   console.log(req.body)
@@ -105,6 +111,7 @@ router.put('/:id', function (req, res){
  }
 })
 });
+
 
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
 
