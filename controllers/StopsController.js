@@ -13,11 +13,11 @@ import errorMsgs from '../private.js';
 
 router.post('/', (req, res) => {
   console.log(req.body)
-  Stops.insertMany(req.body.Stops, (err, Stops) => {
+  Stops.insertMany(req.body.Stops, (err, stops) => {
     if (err) {
       return res.status(500).send(errorMsgs.postBad);
     } else {
-      return res.status(200).send(Stops);
+      return res.status(200).send(stops);
     }
   })
 });
@@ -79,22 +79,22 @@ router.get('/random', (req, res) => {
 });
 // SHOWS ALL STOPS WITH A UNIQUE NAME
 router.get('/showallstopnames', (req, res) => {
-   Stops.find({}).distinct("stop_name", (err, authors) => {
+   Stops.find({}).distinct("stop_name", (err, stops) => {
        if (err) {
        console.log(err);
        res.status(500).send(errorMsgs.getShowAllStopsBad)
        } else {
-       res.status(200).send(authors);
+       res.status(200).send(stops);
      }
    });
 });
 // GETS STOP BY MONGOOSE ID
 router.get('/:id', (req, res) => {
-  Stops.findById({_id: req.params.id}, (err, book) => {
+  Stops.findById({_id: req.params.id}, (err, stop) => {
     if (err) {
       if (err) return res.status(500).send(errorMsgs.getByIdBad);
     } else {
-      res.status(200).send(book)
+      res.status(200).send(stop)
     }
   });
 });
@@ -233,7 +233,7 @@ router.put('/:id', function (req, res){
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
 
 // router.delete('/removeAll', (req, res) => {
-//   Stops.deleteMany({}, (err, books) => {
+//   Stops.deleteMany({}, (err, stops) => {
 //     if (err) {
 //       res.status(500).send(errorMsgs.deleteRemoveAllBad);
 //     } else {
