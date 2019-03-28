@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const Users = require('../models/Users');
 const router = express.Router();
 
+
 import errorMsgs from '../private.js';
 
  router.use(bodyParser.json());
@@ -13,7 +14,7 @@ router.post('/', (req, res) => {
         console.log('From the backend', req.body)
       Users.create(req.body, (err, user) => {
         if (err) {
-          return res.status(500).send(errorMsgs.postBad);
+          // return res.status(500).send(errorMsgs.postBad);
         } else {
           return res.status(200).send(user);
         }
@@ -21,11 +22,11 @@ router.post('/', (req, res) => {
     });
 
 
-// // RETRIEVES ALL USERS FROM DB
+// // RETRIEVES ALL Users FROM DB
 router.get('/', (req, res) => {
   Users.find({}, function (err, users) {
     if (err) {
-      return res.status(500).send(errorMsgs.getAllUsersBad);
+      return res.status(500).send(errorMsgs.getAllBad);
     } else {
       return res.status(200).send(users);
     }
@@ -61,7 +62,8 @@ router.put('/:id', function (req, res){
 });
 
 
-// GETS RANDOM USER FROM DB
+
+// GETS RANDOM User FROM DB
 router.get('/random', (req, res) => {
    Users.aggregate([{
       $sample: {size: 1}},
@@ -69,50 +71,47 @@ router.get('/random', (req, res) => {
       (err, user) => {
         if (err) {
         console.log(err);
-        res.status(500).send(errorMsgs.getRandomUserBad)
+        res.status(500).send(errorMsgs.getShowAllStopsBad)
         } else {
         res.status(200).send(user[0]);
       }
     });
 });
 
-// GETS USER BY MONGOOSE ID
-router.get('/getbyuid/:_id', (req, res) => {
-  console.log(req.params)
+// router.get('/getbyid/:_id', (req, res) => {
+//   console.log(req.params)
+//   Users.find({uid: req.params.uid}, (err, user) => {
+//     if (err) {
+//       if (err) return res.status(500).send(errorMsgs.getByIdBad);
+//     } else {
+//       res.status(200).send(user)
+//     }
+//   });
+// });
+
+router.get('/getbyid/:_id', (req, res) => {
+  // console.log(req.params)
   Users.findOne({_id: req.params._id}, (err, user) => {
     if (err) {
-      if (err) return res.status(500).send(errorMsgs.getByUserIdBad);
+      if (err) return res.status(500).send(errorMsgs.getByIdBad);
     } else {
+      console.log(user)
       res.status(200).send(user)
     }
   });
 });
 
 
-// UPDATES A USER BY SPECIFIC MONGO ID
-
-router.put('/:id', function (req, res){
-  console.log(req.body)
-  Users.findByIdAndUpdate(req.params.id, req.body,
- {new: true},
- (err, user) => {
-   if(err) {
-     return res.status(500).send(errorMsgs.putByUserIdBad);
- } else {
-   return res.status(200).send(user);
- }
-})
-});
 
 
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
 
 // router.delete('/removeAll', (req, res) => {
-//   Stops.deleteMany({}, (err, users) => {
+//   Stops.deleteMany({}, (err, books) => {
 //     if (err) {
 //       res.status(500).send(errorMsgs.deleteRemoveAllBad);
 //     } else {
-//       res.status(200).send(errorMsgs.deleteRemoveAllUsers);
+//       res.status(200).send(errorMsgs.deleteRemoveAll);
 //     };
 //   });
 // });
