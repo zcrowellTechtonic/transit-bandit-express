@@ -78,7 +78,6 @@ router.get('/random', (req, res) => {
 
 // GETS USER BY MONGOOSE ID
 router.get('/getbyuid/:_id', (req, res) => {
-
   console.log(req.params)
   Users.findOne({_id: req.params._id}, (err, user) => {
     if (err) {

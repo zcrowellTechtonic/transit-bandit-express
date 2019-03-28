@@ -8,7 +8,8 @@ const UsersSchema = new mongoose.Schema({
     emailNote: Boolean,
     textNote: Boolean,
     callNote: Boolean,
-    favRoutes: []
+    favRoutes: [],
+    themes: String
 });
 mongoose.model('Users', UsersSchema);
 
