@@ -1,16 +1,6 @@
 const mongoose = require('mongoose');
 const UsersSchema = new mongoose.Schema({
-    // _id: String,
-    // contact: {
-    // email: String,
-    // phone: String
-    // },
-    // notifications: {
-    // email: Boolean,
-    // text: Boolean,
-    // call: Boolean
-    // },
-    // favRoutes: []
+
     _id: String,
     name: String,
     email: String,
@@ -18,7 +8,8 @@ const UsersSchema = new mongoose.Schema({
     emailNote: Boolean,
     textNote: Boolean,
     callNote: Boolean,
-    favRoutes: []
+    favRoutes: [],
+    theme: String
 });
 mongoose.model('Users', UsersSchema);
 

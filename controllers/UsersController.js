@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
         console.log('From the backend', req.body)
       Users.create(req.body, (err, user) => {
         if (err) {
-          return res.status(500).send(errorMsgs.postBad);
+          // return res.status(500).send(errorMsgs.postBad);
         } else {
           return res.status(200).send(user);
         }
@@ -90,11 +90,12 @@ router.get('/random', (req, res) => {
 // });
 
 router.get('/getbyid/:_id', (req, res) => {
-  console.log(req.params)
+  // console.log(req.params)
   Users.findOne({_id: req.params._id}, (err, user) => {
     if (err) {
       if (err) return res.status(500).send(errorMsgs.getByIdBad);
     } else {
+      console.log(user)
       res.status(200).send(user)
     }
   });
