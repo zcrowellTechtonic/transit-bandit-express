@@ -5,7 +5,6 @@ const Stops = require('../models/Stops');
 const router = express.Router();
 // IF IN SAME FILE PORBBALY NO ROUTER
 
-
 import errorMsgs from '../private.js';
 
  router.use(bodyParser.json());
