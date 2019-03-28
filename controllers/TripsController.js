@@ -7,7 +7,7 @@ const router = express.Router();
 import errorMsgs from '../private.js';
 
  router.use(bodyParser.json());
-// POST ROUTE FOR ADDING NEW STOPS
+// POST ROUTE FOR ADDING NEW TRIPS
 router.post('/', (req, res) => {
   Trips.insertMany(req.body, (err, trips) => {
     if (err) {
@@ -18,11 +18,11 @@ router.post('/', (req, res) => {
   })
 });
 
-// RETRIEVES ALL STOPS FROM DB
+// RETRIEVES ALL TRIPS FROM DB
 router.get('/', (req, res) => {
   Trips.find({}, function (err, trips) {
     if (err) {
-      return res.status(500).send(errorMsgs.getAllBad);
+      return res.status(500).send(errorMsgs.getAllTripsBad);
     } else {
       return res.status(200).send(trips);
     }
@@ -35,7 +35,7 @@ router.get('/firstfive', (req, res) => {
   .limit(5)
   .exec(function (err, trips) {
     if (err) {
-      return res.status(500).send(errorMsgs.getAllBad);
+      return res.status(500).send(errorMsgs.getAllTripsBad);
     } else {
       return res.status(200).send(trips);
     }
@@ -59,7 +59,7 @@ router.get('/paginate/:page/:numResults',(req,res)=>{
     })
   })
 })
-// GETS RANDOM STOP FROM DB
+// GETS RANDOM TRIP FROM DB
 router.get('/random', (req, res) => {
    Trips.aggregate([{
       $sample: {size: 1}},
@@ -67,7 +67,7 @@ router.get('/random', (req, res) => {
       (err, trip) => {
         if (err) {
         console.log(err);
-        res.status(500).send(errorMsgs.getShowAllStopsBad)
+        res.status(500).send(errorMsgs.getShowAllTripsBad)
         } else {
         res.status(200).send(trip[0]);
       }
@@ -75,12 +75,11 @@ router.get('/random', (req, res) => {
 });
 
 
-
 router.get('/showallheadsigns', (req, res) => {
    Trips.find({}).distinct("trip_headsign", (err, trips) => {
        if (err) {
        console.log(err);
-       res.status(500).send(errorMsgs.getShowAllStopsBad)
+       res.status(500).send(errorMsgs.getShowAllTripsBad)
        } else {
        res.status(200).send(trips);
      }
@@ -91,7 +90,7 @@ router.get('/showallroutenames', (req, res) => {
   Trips.find({}).distinct("route_id", (err, trips) => {
       if (err) {
       console.log(err);
-      res.status(500).send(errorMsgs.getShowAllStopsBad)
+      res.status(500).send(errorMsgs.getShowAllTripsBad)
       } else {
         const tripStrings = trips.map(items => String(items));
       res.status(200).send(tripStrings);
@@ -104,31 +103,19 @@ router.get('/tripid/:trip_id', (req, res) => {
   Trips.find({trip_id: req.params.trip_id}, (err, trips) => {
       if (err) {
       console.log(err);
-      res.status(500).send(errorMsgs.getShowAllStopsBad)
+      res.status(500).send(errorMsgs.getShowAllTripsBad)
       } else {
       res.status(200).send(trips);
     }
   });
 });
 
-// router.get('/headsign/getbyheadsign', (req, res) => {
-//   console.log(req.body)
-//   let id = req.body.route_id;
-//   Trips.find({route_id: id}, (err, trips) => {
-//       if (err) {
-//       console.log(err);
-//       res.status(500).send(errorMsgs.getShowAllStopsBad)
-//       } else {
-//       res.status(200).send(trips);
-//     }
-//   });
-// });
 
 router.get('/tripheadsign/:trip_headsign', (req, res) => {
    Trips.find({trip_headsign: req.params.trip_headsign}, (err, trips) => {
        if (err) {
        console.log(err);
-       res.status(500).send(errorMsgs.getShowAllStopsBad)
+       res.status(500).send(errorMsgs.getShowAllTripsBad)
        } else {
        res.status(200).send(trips);
      }
@@ -136,93 +123,93 @@ router.get('/tripheadsign/:trip_headsign', (req, res) => {
 });
 
 
-// GETS STOP BY MONGOOSE ID
+// GETS TRIP BY MONGOOSE ID
 router.get('/:id', (req, res) => {
   Trips.findById({_id: req.params.id}, (err, trip) => {
     if (err) {
-      if (err) return res.status(500).send(errorMsgs.getByIdBad);
+      if (err) return res.status(500).send(errorMsgs.getByTripIdBad);
     } else {
       res.status(200).send(trip)
     }
   });
 });
 
-// GETS STOP BY LATITUDE
-router.get('/getbystoplat/:stop_lat', (req, res) => {
+// GETS TRIP BY LATITUDE
+router.get('/getbytriplat/:trip_lat', (req, res) => {
   console.log(req.params)
   Trips.find({stop_lat: req.params.trip_lat}, (err, tripByLon) => {
      if (err) {
-       return res.status(500).send(errorMsgs.deleteByIdBad);
+       return res.status(500).send(errorMsgs.deleteByTripBad);
      } else {
       res.status(200).send(tripByLon);
     }
   });
 });
-// GETS STOP BY SPECIFIC STOP ID
-router.get('/getbystopid/:stop_id', (req, res) => {
+// GETS TRIP BY SPECIFIC STOP ID
+router.get('/getbytripid/:trip_id', (req, res) => {
   console.log(req.params)
-  Trips.find({stop_id: req.params.stop_id}, (err, stopById) => {
+  Trips.find({stop_id: req.params.stop_id}, (err, tripById) => {
      if (err) {
-       return res.status(500).send(errorMsgs.deleteByIdBad);
+       return res.status(500).send(errorMsgs.deleteByTripBad);
      } else {
-      res.status(200).send(stopById);
+      res.status(200).send(tripById);
     }
   });
 });
-// GETS STOP BY SPECIFIC STOP NAME
-router.get('/getbystopname/:stop_name', (req, res) => {
+// GETS TRIP BY SPECIFIC STOP NAME
+router.get('/getbytripname/:trip_name', (req, res) => {
   console.log(req.params)
-  Trips.find({stop_name: req.params.stop_name}, (err, stopByName) => {
+  Trips.find({stop_name: req.params.stop_name}, (err, tripByName) => {
      if (err) {
-       return res.status(500).send(errorMsgs.deleteByIdBad);
+       return res.status(500).send(errorMsgs.deleteByTripBad);
      } else {
-      res.status(200).send(stopByName);
+      res.status(200).send(tripByName);
     }
   });
 });
-// GETS ALL STOPS BY DIRECTION EX. EAST, WEST...
-router.get('/getstopsbydirection/:stop_desc', (req, res) => {
+// GETS ALL TRIPS BY DIRECTION EX. EAST, WEST...
+router.get('/gettripsbydirection/:trip_desc', (req, res) => {
   
   console.log(req.params)
-  Trips.find({stop_desc: req.params.stop_desc}, (err, stopByName) => {
+  Trips.find({stop_desc: req.params.stop_desc}, (err, tripByName) => {
      if (err) {
-       return res.status(500).send(errorMsgs.deleteByIdBad);
+       return res.status(500).send(errorMsgs.deleteByTripBad);
      } else {
-      res.status(200).send(stopByName);
+      res.status(200).send(tripByName);
     }
   });
 });
-// DELETES A STOP BY STOP NAME
-router.delete('/deletebystopname/:stop_name', (req, res) => {
+// DELETES A TRIP BY STOP NAME
+router.delete('/deletebytripname/:trip_name', (req, res) => {
   console.log(req.params)
-  Trips.remove({stop_name: req.params.stop_name}, (err, stop) => {
+  Trips.remove({stop_name: req.params.stop_name}, (err, trip) => {
      if (err) {
-       return res.status(500).send(errorMsgs.deleteByIdBad);
+       return res.status(500).send(errorMsgs.deleteByTripBad);
      } else {
-      res.status(200).send(stop + errorMsgs.deleteByIdGood);
+      res.status(200).send(trip + errorMsgs.deleteByTripIdGood);
     }
   });
 });
-// DELETES STOPS BY STOP DIRECTION EX. ALL EAST, WEST...
-router.delete('/deletebytitle/:stop_desc', (req, res) => {
+// DELETES TRIPS BY STOP DIRECTION EX. ALL EAST, WEST...
+router.delete('/deletebytitle/:trip_desc', (req, res) => {
   console.log(req.params)
-  Trips.remove({stop_desc: req.params.stop_desc}, (err, stop) => {
+  Trips.remove({stop_desc: req.params.stop_desc}, (err, trip) => {
      if (err) {
-       return res.status(500).send(errorMsgs.deleteByIdBad);
+       return res.status(500).send(errorMsgs.deleteByTripBad);
      } else {
-      res.status(200).send(stop + errorMsgs.deleteByIdGood);
+      res.status(200).send(trip + errorMsgs.deleteByTripIdGood);
     }
   });
 });
-// UPDATES A STOP BY SPECIFIC MONGO ID
+// UPDATES A TRIP BY SPECIFIC MONGO ID
 router.put('/:id', function (req, res){
   Trips.findByIdAndUpdate(req.params.id, req.body,
  {new: true},
- (err, stop) => {
+ (err, trip) => {
    if(err) {
-     return res.status(500).send(errorMsgs.putByIdBad);
+     return res.status(500).send(errorMsgs.putByTripIdBad);
  } else {
-   return res.status(200).send(stop);
+   return res.status(200).send(trip);
  }
 })
 });
@@ -230,11 +217,11 @@ router.put('/:id', function (req, res){
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
 
 // router.delete('/removeAll', (req, res) => {
-//   Trips.deleteMany({}, (err, books) => {
+//   Trips.deleteMany({}, (err, trips) => {
 //     if (err) {
 //       res.status(500).send(errorMsgs.deleteRemoveAllBad);
 //     } else {
-//       res.status(200).send(errorMsgs.deleteRemoveAll);
+//       res.status(200).send(errorMsgs.deleteRemoveAllTrips);
 //     };
 //   });
 // });
