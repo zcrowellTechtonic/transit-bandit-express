@@ -233,7 +233,7 @@ router.put('/:id', function (req, res){
 // ROUTE USED TO CLEAR ENTIRE DB. FOR EMERGENCY USE ONLY!
 
 // router.delete('/removeAll', (req, res) => {
-//   Stops.deleteMany({}, (err, books) => {
+//   Stops.deleteMany({}, (err, stops) => {
 //     if (err) {
 //       res.status(500).send(errorMsgs.deleteRemoveAllBad);
 //     } else {
