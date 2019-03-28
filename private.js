@@ -1,5 +1,5 @@
 module.exports = {
-  post: "Books array could not be found",
+  post: "Item could not be found",
   postBad: "Could not add stops",
   getRandomBad: "Could not get random stop from the database.",
   getShowAllStopsBad: "Could not get stops from the database.",
